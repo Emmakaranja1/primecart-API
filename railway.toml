@@ -4,6 +4,9 @@ builder = "NIXPACKS"
 [nixpacks]
 node_version = "20"
 
+[variables]
+NIXPACKS_NODE_VERSION = "20"
+
 [deploy]
 healthcheckPath = "/api/health"
 healthcheckTimeout = 100
