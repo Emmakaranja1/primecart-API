@@ -49,7 +49,7 @@ class MpesaService
                 'PartyA' => $this->formatPhoneNumber($phoneNumber),
                 'PartyB' => $this->shortcode,
                 'PhoneNumber' => $this->formatPhoneNumber($phoneNumber),
-                'CallBackURL' => $callbackUrl ?? 'https://web-production-e6965.up.railway.app/api/payment/callbacks/mpesa',
+                'CallBackURL' => $callbackUrl ?? config('app.url') . '/api/payment/webhooks/mpesa',
                 'AccountReference' => $payment->transaction_id,
                 'TransactionDesc' => 'Payment for Order #' . $payment->order_id,
                 'Remark' => 'PrimeCart Payment'
@@ -266,7 +266,7 @@ class MpesaService
             return '254' . substr($phoneNumber, 1);
         }
         
-        if (strlen($phoneNumber) === 12 && $phoneNumber[0] === '+') {
+        if (str_starts_with($phoneNumber, '+254')) {
             return substr($phoneNumber, 1);
         }
         

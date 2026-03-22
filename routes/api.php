@@ -149,6 +149,8 @@ Route::post('/payment/pesapal/webhook', [PaymentController::class, 'pesapalWebho
 Route::prefix('payment/callbacks')->group(function () {
     Route::match(['get','post'], '/flutterwave', [PaymentController::class, 'flutterwaveCallback'])
         ->name('payment.flutterwave.callback');
+    Route::post('/mpesa', [PaymentController::class, 'mpesaWebhook'])
+        ->name('payment.mpesa.callback');
 });
 
 // Payment status routes (for user redirects after payment)

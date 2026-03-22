@@ -1,0 +1,76 @@
+{
+	"id": "primecart-api-environment",
+	"name": "PrimeCart API Environment",
+	"values": [
+		{
+			"key": "base_url",
+			"value": "https://web-production-e6965.up.railway.app/api",
+			"type": "default",
+			"enabled": true,
+			"description": "Base URL for PrimeCart API (Railway Production)"
+		},
+		{
+			"key": "local_base_url",
+			"value": "http://localhost:8000/api",
+			"type": "default",
+			"enabled": true,
+			"description": "Base URL for local development"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "secret",
+			"enabled": true,
+			"description": "JWT authentication token (auto-populated after login)"
+		},
+		{
+			"key": "user_email",
+			"value": "john@example.com",
+			"type": "default",
+			"enabled": true,
+			"description": "Test user email"
+		},
+		{
+			"key": "user_password",
+			"value": "password123",
+			"type": "secret",
+			"enabled": true,
+			"description": "Test user password"
+		},
+		{
+			"key": "admin_email",
+			"value": "admin@example.com",
+			"type": "default",
+			"enabled": true,
+			"description": "Test admin email"
+		},
+		{
+			"key": "admin_password",
+			"value": "adminpassword",
+			"type": "secret",
+			"enabled": true,
+			"description": "Test admin password"
+		},
+		{
+			"key": "test_phone",
+			"value": "+254712345678",
+			"type": "default",
+			"enabled": true,
+			"description": "Test phone number for payments"
+		},
+		{
+			"key": "test_product_id",
+			"value": "1",
+			"type": "default",
+			"enabled": true,
+			"description": "Test product ID"
+		},
+		{
+			"key": "test_order_id",
+			"value": "1",
+			"type": "default",
+			"enabled": true,
+			"description": "Test order ID"
+		}
+	]
+}

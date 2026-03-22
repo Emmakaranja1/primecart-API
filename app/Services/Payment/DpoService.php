@@ -28,8 +28,8 @@ class DpoService
     public function createPaymentToken(Payment $payment, string $email, ?string $callbackUrl = null): array
     {
         try {
-            $callbackUrl ??= 'https://web-production-e6965.up.railway.app/api/payment/callbacks/dpo';
-            $backUrl = 'https://web-production-e6965.up.railway.app/payment/cancelled';
+            $callbackUrl ??= config('app.url') . '/api/payment/webhooks/dpo';
+            $backUrl = config('app.url') . '/payment/cancelled';
             $serviceDate = now()->format('Y/m/d H:i');
 
             

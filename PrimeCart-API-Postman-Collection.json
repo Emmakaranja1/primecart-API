@@ -1,0 +1,1070 @@
+{
+	"info": {
+		"_postman_id": "primecart-api-collection",
+		"name": "PrimeCart API",
+		"description": "Complete API collection for PrimeCart e-commerce platform with authentication, products, cart, orders, and payments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/health",
+					"host": ["{{base_url}}"],
+					"path": ["health"]
+				},
+				"description": "Check API status and health"
+			},
+			"response": []
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"johndoe\",\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\",\n    \"phone_number\": \"+1234567890\",\n    \"address\": \"123 Main St, City, Country\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						},
+						"description": "Register a new user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						},
+						"description": "Login user and get JWT token"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.data.token) {",
+									"        pm.environment.set('jwt_token', response.data.token);",
+									"        console.log('JWT token saved to environment');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "Admin Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"admin@example.com\",\n    \"password\": \"adminpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/admin/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "admin", "login"]
+						},
+						"description": "Login as admin user"
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.data.token) {",
+									"        pm.environment.set('jwt_token', response.data.token);",
+									"        console.log('Admin JWT token saved to environment');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"response": []
+				},
+				{
+					"name": "Forgot Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/forgot-password",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "forgot-password"]
+						},
+						"description": "Request password reset OTP"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"otp\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/verify-otp",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "verify-otp"]
+						},
+						"description": "Verify OTP for password reset"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"john@example.com\",\n    \"otp\": \"123456\",\n    \"password\": \"newpassword123\",\n    \"password_confirmation\": \"newpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/reset-password",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "reset-password"]
+						},
+						"description": "Reset password with verified OTP"
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/profile",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "profile"]
+						},
+						"description": "Get current user profile"
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "logout"]
+						},
+						"description": "Logout user and invalidate token"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "List Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products?page=1&limit=10&category=electronics&sort=price&order=asc",
+							"host": ["{{base_url}}"],
+							"path": ["products"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1",
+									"description": "Page number for pagination"
+								},
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Items per page"
+								},
+								{
+									"key": "category",
+									"value": "electronics",
+									"description": "Filter by category"
+								},
+								{
+									"key": "sort",
+									"value": "price",
+									"description": "Sort by field"
+								},
+								{
+									"key": "order",
+									"value": "asc",
+									"description": "Sort order"
+								}
+							]
+						},
+						"description": "Get all products with filtering and pagination"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/1",
+							"host": ["{{base_url}}"],
+							"path": ["products", "1"]
+						},
+						"description": "Get details of a specific product"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"New Product\",\n    \"description\": \"Product description\",\n    \"price\": 99.99,\n    \"category\": \"electronics\",\n    \"stock\": 100,\n    \"image_url\": \"https://example.com/image.jpg\",\n    \"status\": \"active\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/products",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "products"]
+						},
+						"description": "Create new product (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Updated Product Name\",\n    \"price\": 149.99,\n    \"stock\": 75\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/products/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "products", "1"]
+						},
+						"description": "Update existing product (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/products/1",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "products", "1"]
+						},
+						"description": "Delete a product (Admin only)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Get Cart",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/cart",
+							"host": ["{{base_url}}"],
+							"path": ["cart"]
+						},
+						"description": "Get current user's cart items"
+					},
+					"response": []
+				},
+				{
+					"name": "Add to Cart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"product_id\": 1,\n    \"quantity\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/add",
+							"host": ["{{base_url}}"],
+							"path": ["cart", "add"]
+						},
+						"description": "Add item to cart"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Cart Item",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"quantity\": 3\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/cart/1",
+							"host": ["{{base_url}}"],
+							"path": ["cart", "1"]
+						},
+						"description": "Update quantity of cart item"
+					},
+					"response": []
+				},
+				{
+					"name": "Remove from Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/cart/1",
+							"host": ["{{base_url}}"],
+							"path": ["cart", "1"]
+						},
+						"description": "Remove item from cart"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"shipping_address\": \"123 Main St, City, Country\",\n    \"billing_address\": \"123 Main St, City, Country\",\n    \"notes\": \"Please deliver after 5 PM\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": ["{{base_url}}"],
+							"path": ["orders"]
+						},
+						"description": "Create new order from cart items"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders?page=1&limit=10&status=pending",
+							"host": ["{{base_url}}"],
+							"path": ["orders"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "pending"
+								}
+							]
+						},
+						"description": "Get all orders for current user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Single Order",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders/1",
+							"host": ["{{base_url}}"],
+							"path": ["orders", "1"]
+						},
+						"description": "Get details of a specific order"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Admin Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/orders",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "orders"]
+						},
+						"description": "Get all orders with admin details"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payments",
+			"item": [
+				{
+					"name": "Get Payment Methods",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/payment/methods",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "methods"]
+						},
+						"description": "Get available payment methods"
+					},
+					"response": []
+				},
+				{
+					"name": "Initiate Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": 1001,\n    \"payment_method\": \"mpesa\",\n    \"amount\": 1999.98,\n    \"currency\": \"KES\",\n    \"phone_number\": \"+254712345678\",\n    \"callback_url\": \"https://your-app.com/payment/callback\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payment/initiate",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "initiate"]
+						},
+						"description": "Initiate payment for an order"
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"payment_id\": \"pay_123456789\",\n    \"reference\": \"ORDER1001-123456789\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payment/verify",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "verify"]
+						},
+						"description": "Verify payment status"
+					},
+					"response": []
+				},
+				{
+					"name": "Check Payment Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/payment/status/pay_123456789",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "status", "pay_123456789"]
+						},
+						"description": "Check status of a payment"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "M-PESA",
+			"item": [
+				{
+					"name": "M-PESA STK Push",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": 1001,\n    \"phone_number\": \"+254712345678\",\n    \"amount\": 1999.98,\n    \"account_reference\": \"ORDER1001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payment/mpesa/stk-push",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "mpesa", "stk-push"]
+						},
+						"description": "Initiate M-PESA STK Push payment"
+					},
+					"response": []
+				},
+				{
+					"name": "M-PESA Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/payment/mpesa/status/pay_123456789",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "mpesa", "status", "pay_123456789"]
+						},
+						"description": "Check M-PESA payment status"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flutterwave",
+			"item": [
+				{
+					"name": "Flutterwave Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": 1001,\n    \"amount\": 1999.98,\n    \"currency\": \"KES\",\n    \"email\": \"customer@example.com\",\n    \"phone_number\": \"+254712345678\",\n    \"redirect_url\": \"https://your-app.com/payment/success\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payment/flutterwave/pay",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "flutterwave", "pay"]
+						},
+						"description": "Initiate Flutterwave payment"
+					},
+					"response": []
+				},
+				{
+					"name": "Flutterwave Verify",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/payment/flutterwave/verify/FLW123456789",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "flutterwave", "verify", "FLW123456789"]
+						},
+						"description": "Verify Flutterwave transaction"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users?page=1&limit=10&status=active",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "active"
+								}
+							]
+						},
+						"description": "Get all users with pagination and filtering"
+					},
+					"response": []
+				},
+				{
+					"name": "Activate User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/1/activate",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", "1", "activate"]
+						},
+						"description": "Activate a user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Deactivate User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/users/1/deactivate",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "users", "1", "deactivate"]
+						},
+						"description": "Deactivate a user account"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Activity Logs",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/activity-logs?page=1&limit=10",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "activity-logs"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Get system activity logs"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Users Report",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/reports/users?format=json&date_from=2024-01-01&date_to=2024-12-31",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "reports", "users"],
+							"query": [
+								{
+									"key": "format",
+									"value": "json"
+								},
+								{
+									"key": "date_from",
+									"value": "2024-01-01"
+								},
+								{
+									"key": "date_to",
+									"value": "2024-12-31"
+								}
+							]
+						},
+						"description": "Generate users report"
+					},
+					"response": []
+				},
+				{
+					"name": "Orders Report",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/reports/orders?format=json&status=completed",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "reports", "orders"],
+							"query": [
+								{
+									"key": "format",
+									"value": "json"
+								},
+								{
+									"key": "status",
+									"value": "completed"
+								}
+							]
+						},
+						"description": "Generate orders report"
+					},
+					"response": []
+				},
+				{
+					"name": "Export Report",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"orders\",\n    \"format\": \"excel\",\n    \"filters\": {\n        \"date_from\": \"2024-01-01\",\n        \"date_to\": \"2024-12-31\",\n        \"status\": \"completed\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/admin/reports/export",
+							"host": ["{{base_url}}"],
+							"path": ["admin", "reports", "export"]
+						},
+						"description": "Export custom report"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Webhooks & Callbacks",
+			"item": [
+				{
+					"name": "Test Webhook",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/test-webhook",
+							"host": ["{{base_url}}"],
+							"path": ["test-webhook"]
+						},
+						"description": "Test webhook functionality"
+					},
+					"response": []
+				},
+				{
+					"name": "M-PESA Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Body\": {\n        \"stkCallback\": {\n            \"MerchantRequestID\": \"12345\",\n            \"CheckoutRequestID\": \"67890\",\n            \"ResultCode\": 0,\n            \"ResultDesc\": \"Success\",\n            \"CallbackMetadata\": {\n                \"Item\": [\n                    {\n                        \"Name\": \"Amount\",\n                        \"Value\": 1999.98\n                    },\n                    {\n                        \"Name\": \"MpesaReceiptNumber\",\n                        \"Value\": \"ABC123XYZ\"\n                    }\n                ]\n            }\n        }\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payment/webhooks/mpesa",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "webhooks", "mpesa"]
+						},
+						"description": "M-PESA payment webhook endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "Flutterwave Webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"event\": \"charge.completed\",\n    \"data\": {\n        \"id\": \"123456\",\n        \"tx_ref\": \"ORDER1001-123456789\",\n        \"status\": \"successful\",\n        \"amount\": 1999.98,\n        \"currency\": \"KES\"\n    }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payment/flutterwave/webhook",
+							"host": ["{{base_url}}"],
+							"path": ["payment", "flutterwave", "webhook"]
+						},
+						"description": "Flutterwave payment webhook endpoint"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global pre-request script",
+					"console.log('Request sent to:', pm.request.url.toString());"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test script",
+					"console.log('Response status:', pm.response.code);",
+					"console.log('Response time:', pm.response.responseTime);"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://web-production-e6965.up.railway.app/api",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
