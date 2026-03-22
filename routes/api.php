@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\AuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -26,5 +27,15 @@ Route::prefix('auth')->group(function () {
 Route::middleware('jwt.auth')->prefix('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     Route::get('/profile', [AuthController::class, 'profile'])->name('auth.profile');
+});
+
+// Admin routes (JWT + Admin role required)
+Route::middleware(['jwt.auth', 'admin'])->prefix('admin')->group(function () {
+    // User management
+    Route::get('/users', [AdminController::class, 'getUsers'])->name('admin.users.list');
+    Route::put('/users/{id}/activate', [AdminController::class, 'activateUser'])->name('admin.users.activate');
+    Route::put('/users/{id}/deactivate', [AdminController::class, 'deactivateUser'])->name('admin.users.deactivate');
     
+    // Activity logs
+    Route::get('/activity-logs', [AdminController::class, 'getActivityLogs'])->name('admin.activity-logs');
 });

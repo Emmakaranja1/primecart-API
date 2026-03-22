@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\PasswordReset;
+use App\Models\ActivityLog;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -107,6 +108,15 @@ class AuthController extends Controller
 
         $token = JWTAuth::fromUser($user);
 
+           
+        ActivityLog::log(
+            $user->id,
+            'login',
+            'user',
+            $user->id,
+            $request->ip()
+        );
+
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
@@ -173,6 +183,14 @@ class AuthController extends Controller
         }
 
         $token = JWTAuth::fromUser($user);
+
+          ActivityLog::log(
+            $user->id,
+            'admin_login',
+            'user',
+            $user->id,
+            $request->ip()
+        );
 
         return response()->json([
             'success' => true,
@@ -265,7 +283,13 @@ class AuthController extends Controller
 
         Mail::to($request->email)->send(new \App\Mail\PasswordOtpMail($passwordReset->otp));
 
-       
+        ActivityLog::log(
+            $user->id,
+            'password_reset_requested',
+            'user',
+            $user->id,
+            $request->ip()
+        );
 
         return response()->json([
             'success' => true,
@@ -343,6 +367,13 @@ class AuthController extends Controller
 
         PasswordReset::deleteUsedOtp($request->email, $request->otp);
 
+        ActivityLog::log(
+            $user->id,
+            'password_reset_completed',
+            'user',
+            $user->id,
+            $request->ip()
+        );
 
         return response()->json([
             'success' => true,
