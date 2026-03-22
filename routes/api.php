@@ -116,6 +116,15 @@ Route::middleware('jwt.auth')->prefix('payment')->group(function () {
     Route::get('/pesapal/status/{orderTrackingId}', [PaymentController::class, 'pesapalStatus'])->name('payment.pesapal.status');
 });
 
+// Test webhook route for debugging
+Route::post('/test-webhook', function () {
+    return response()->json([
+        'success' => true,
+        'message' => 'Test webhook working',
+        'timestamp' => now()
+    ]);
+});
+
 // Payment webhook routes (no authentication - called by payment providers)
 Route::prefix('payment/webhooks')->group(function () {
     Route::post('/mpesa', [PaymentController::class, 'mpesaWebhook'])->name('payment.webhook.mpesa');
