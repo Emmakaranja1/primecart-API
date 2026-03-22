@@ -49,7 +49,7 @@ class MpesaService
                 'PartyA' => $this->formatPhoneNumber($phoneNumber),
                 'PartyB' => $this->shortcode,
                 'PhoneNumber' => $this->formatPhoneNumber($phoneNumber),
-                'CallBackURL' => $callbackUrl ?? url('/api/payment/callbacks/mpesa'),
+                'CallBackURL' => $callbackUrl ?? 'https://web-production-e6965.up.railway.app/api/payment/callbacks/mpesa',
                 'AccountReference' => $payment->transaction_id,
                 'TransactionDesc' => 'Payment for Order #' . $payment->order_id,
                 'Remark' => 'PrimeCart Payment'

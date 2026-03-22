@@ -69,7 +69,7 @@ class PesaPalService
                 'currency' => $payment->currency,
                 'amount' => $payment->amount,
                 'description' => 'Payment for Order #' . $payment->order_id,
-                'callback_url' => $callbackUrl ?? 'https://uncreditable-jerlene-unsystematic.ngrok-free.dev/api/payment/webhooks/pesapal',
+                'callback_url' => $callbackUrl ?? 'https://web-production-e6965.up.railway.app/api/payment/webhooks/pesapal',
                 'redirect_mode' => '',
                 'notification_id' => '',
                 'branch' => 'PrimeCart Online',

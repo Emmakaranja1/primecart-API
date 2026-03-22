@@ -48,7 +48,7 @@ class FlutterwaveService
                     'description' => 'Payment for Order #' . $payment->order_id,
                     'logo' => null
                 ],
-                'redirect_url' => $callbackUrl ?? url('/api/payment/callbacks/flutterwave'),
+                'redirect_url' => $callbackUrl ?? 'https://web-production-e6965.up.railway.app/api/payment/callbacks/flutterwave',
                 'payment_options' => 'card,banktransfer,ussd,mpesa',
                 'meta' => [
                     'payment_id' => $payment->id,
