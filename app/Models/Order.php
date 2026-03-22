@@ -62,6 +62,19 @@ class Order extends Model
         return $query->where('user_id', $userId);
     }
 
+    public function scopeSearch($query, $search)
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->where('id', 'like', '%' . $search . '%')
+              ->orWhereHas('user', function ($userQuery) use ($search) {
+                  $userQuery->where('email', 'like', '%' . $search . '%');
+              })
+              ->orWhere('payment_method', 'like', '%' . $search . '%')
+              ->orWhere('status', 'like', '%' . $search . '%');
+        });
+    }
+
+
     public function isPending()
     {
         return $this->status === 'pending';

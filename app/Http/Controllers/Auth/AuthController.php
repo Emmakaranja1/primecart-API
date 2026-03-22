@@ -48,6 +48,15 @@ class AuthController extends Controller
             'status' => 'active',
         ]);
 
+         ActivityLog::log(
+            $user->id,
+            'registration',
+            'user',
+            $user->id,
+            $request->ip()
+        );
+
+
         $token = JWTAuth::fromUser($user);
 
         return response()->json([

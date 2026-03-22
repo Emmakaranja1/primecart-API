@@ -7,6 +7,7 @@ use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -74,6 +75,16 @@ class OrderController extends Controller
             }
 
             $cart->cartItems()->delete();
+
+
+            ActivityLog::log(
+                $user->id,
+                'order_placed',
+                'order',
+                $order->id,
+                $request->ip()
+            );
+
 
             return response()->json([
                 'success' => true,
@@ -178,11 +189,64 @@ class OrderController extends Controller
 
     public function adminIndex(Request $request)
     {
-        $orders = Order::with(['user:id,username,email', 'orderItems.product'])
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->get('per_page', 10));
+       $validator = Validator::make($request->all(), [
+            'search' => 'nullable|string|max:255',
+            'status' => 'nullable|in:pending,approved,rejected,delivered',
+            'payment_status' => 'nullable|in:pending,paid,failed',
+            'payment_method' => 'nullable|in:MPESA,Flutterwave,DPO,PesaPal',
+            'start_date' => 'nullable|date|date_format:Y-m-d',
+            'end_date' => 'nullable|date|date_format:Y-m-d|after_or_equal:start_date',
+            'page' => 'nullable|integer|min:1',
+            'limit' => 'nullable|integer|min:1|max:100',
+        ]);
 
-        $ordersData = $orders->getCollection()->map(function ($order) {
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $query = Order::with(['user:id,username,email', 'orderItems.product']);
+
+        if ($request->has('search')) {
+            $query->search($request->search);
+        }
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->has('payment_status')) {
+            $query->where('payment_status', $request->payment_status);
+        }
+
+        if ($request->has('payment_method')) {
+            $query->where('payment_method', $request->payment_method);
+        }
+
+        if ($request->has('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+
+        if ($request->has('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
+        $limit = $request->get('limit', 10);
+        $page = $request->get('page', 1);
+        $offset = ($page - 1) * $limit;
+
+        $orders = $query->orderBy('created_at', 'desc')
+            ->offset($offset)
+            ->limit($limit)
+            ->get();
+
+        $total = $query->count();
+
+        $ordersData = $orders->map(function ($order) {
+
             return [
                 'id' => $order->id,
                 'transaction_reference' => $order->transaction_reference,
@@ -205,10 +269,18 @@ class OrderController extends Controller
             'data' => [
                 'orders' => $ordersData,
                 'pagination' => [
-                    'current_page' => $orders->currentPage(),
-                    'last_page' => $orders->lastPage(),
-                    'per_page' => $orders->perPage(),
-                    'total' => $orders->total(),
+                   'current_page' => $page,
+                    'per_page' => $limit,
+                    'total' => $total,
+                    'total_pages' => ceil($total / $limit),
+                ],
+                'filters' => [
+                    'search' => $request->get('search'),
+                    'status' => $request->get('status'),
+                    'payment_status' => $request->get('payment_status'),
+                    'payment_method' => $request->get('payment_method'),
+                    'start_date' => $request->get('start_date'),
+                    'end_date' => $request->get('end_date'),
                 ]
             ]
         ]);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -202,6 +203,15 @@ class ProductController extends Controller
             'featured' => $request->boolean('featured', false),
         ]);
 
+        ActivityLog::log(
+            auth()->user()->id,
+            'product_created',
+            'product',
+            $product->id,
+            $request->ip()
+        );
+
+
         return response()->json([
             'success' => true,
             'message' => 'Product created successfully',
@@ -253,6 +263,15 @@ class ProductController extends Controller
             'is_active' => $request->boolean('is_active', $product->is_active),
             'featured' => $request->boolean('featured', $product->featured),
         ]);
+
+            ActivityLog::log(
+            auth()->user()->id,
+            'product_updated',
+            'product',
+            $product->id,
+            $request->ip()
+        );
+
 
         return response()->json([
             'success' => true,
