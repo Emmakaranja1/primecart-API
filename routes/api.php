@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
@@ -43,6 +44,12 @@ Route::middleware(['jwt.auth', 'admin'])->prefix('admin')->group(function () {
     // Activity logs
     Route::get('/activity-logs', [AdminController::class, 'getActivityLogs'])->name('admin.activity-logs');
     
+     // Reports
+    Route::get('/reports/users', [ReportsController::class, 'usersReport'])->name('admin.reports.users');
+    Route::get('/reports/orders', [ReportsController::class, 'ordersReport'])->name('admin.reports.orders');
+    Route::get('/reports/activity', [ReportsController::class, 'activityReport'])->name('admin.reports.activity');
+    Route::post('/reports/export', [ReportsController::class, 'exportReport'])->name('admin.reports.export');
+
     // Product management
     Route::get('/products', [ProductController::class, 'adminIndex'])->name('admin.products.list');
     Route::post('/products', [ProductController::class, 'store'])->name('admin.products.create');
