@@ -18,6 +18,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Health check endpoint for Railway
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'timestamp' => now()->toISOString(),
+        'service' => 'PrimeCart API',
+        'version' => '1.0.0'
+    ]);
+});
+
 // Public routes (no authentication required)
 Route::prefix('auth')->group(function () {
     Route::post('/register', [AuthController::class, 'register'])->name('auth.register');

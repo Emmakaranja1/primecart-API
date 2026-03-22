@@ -1,0 +1,20 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 100
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+
+[[services]]
+name = "app"
+
+[services.variables]
+APP_ENV = "production"
+APP_DEBUG = "false"
+LOG_CHANNEL = "stderr"
+LOG_LEVEL = "error"
+SESSION_DRIVER = "database"
+QUEUE_CONNECTION = "database"
+CACHE_STORE = "database"
