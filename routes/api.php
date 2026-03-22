@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,4 +60,16 @@ Route::middleware('jwt.auth')->prefix('cart')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
     Route::put('/{id}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+});
+
+// User order routes (JWT authentication required)
+Route::middleware('jwt.auth')->prefix('orders')->group(function () {
+    Route::post('/', [OrderController::class, 'store'])->name('orders.store');
+    Route::get('/', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/{id}', [OrderController::class, 'show'])->name('orders.show');
+});
+
+// Admin order routes (JWT + Admin role required)
+Route::middleware(['jwt.auth', 'admin'])->prefix('admin/orders')->group(function () {
+    Route::get('/', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
 });
