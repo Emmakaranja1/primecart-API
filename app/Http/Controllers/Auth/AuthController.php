@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\PasswordReset;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -233,6 +235,118 @@ class AuthController extends Controller
                 'created_at' => auth()->user()->created_at,
                 'updated_at' => auth()->user()->updated_at,
             ]
+        ]);
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|exists:users,email',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = User::where('email', $request->email)->first();
+        
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $passwordReset = PasswordReset::createOtp($request->email);
+
+        Mail::to($request->email)->send(new \App\Mail\PasswordOtpMail($passwordReset->otp));
+
+       
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password reset OTP sent to your email'
+        ]);
+    }
+
+    public function verifyOtp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'otp' => 'required|string|size:6',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $passwordReset = PasswordReset::findValidOtp($request->email, $request->otp);
+
+        if (!$passwordReset) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired OTP'
+            ], 400);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'OTP verified successfully'
+        ]);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email',
+            'otp' => 'required|string|size:6',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $passwordReset = PasswordReset::findValidOtp($request->email, $request->otp);
+
+        if (!$passwordReset) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid or expired OTP'
+            ], 400);
+        }
+
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password)
+        ]);
+
+        PasswordReset::deleteUsedOtp($request->email, $request->otp);
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Password reset successfully'
         ]);
     }
 }
