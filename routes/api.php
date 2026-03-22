@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -50,3 +51,12 @@ Route::middleware(['jwt.auth', 'admin'])->prefix('admin')->group(function () {
 // User product routes (public access)
 Route::get('/products', [ProductController::class, 'index'])->name('products.list');
 Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
+
+
+// User cart routes (JWT authentication required)
+Route::middleware('jwt.auth')->prefix('cart')->group(function () {
+    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+    Route::put('/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+});
