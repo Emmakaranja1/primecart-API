@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\CartController;
 use Illuminate\Support\Facades\Route;
 
@@ -72,4 +73,60 @@ Route::middleware('jwt.auth')->prefix('orders')->group(function () {
 // Admin order routes (JWT + Admin role required)
 Route::middleware(['jwt.auth', 'admin'])->prefix('admin/orders')->group(function () {
     Route::get('/', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
+});
+
+// Payment routes (JWT authentication required)
+Route::middleware('jwt.auth')->prefix('payment')->group(function () {
+    Route::post('/initiate', [PaymentController::class, 'initiate'])->name('payment.initiate');
+    Route::post('/verify', [PaymentController::class, 'verify'])->name('payment.verify');
+    Route::get('/methods', [PaymentController::class, 'methods'])->name('payment.methods');
+    Route::get('/status/{id}', [PaymentController::class, 'status'])->name('payment.status');
+    
+    // M-PESA specific routes
+    Route::post('/mpesa/stk-push', [PaymentController::class, 'mpesaStkPush'])->name('payment.mpesa.stk-push');
+    Route::get('/mpesa/status/{payment_id}', [PaymentController::class, 'mpesaStatus'])->name('payment.mpesa.status');
+    
+    // Flutterwave specific routes
+    Route::post('/flutterwave/pay', [PaymentController::class, 'flutterwavePay'])->name('payment.flutterwave.pay');
+    Route::get('/flutterwave/verify/{reference}', [PaymentController::class, 'flutterwaveVerify'])->name('payment.flutterwave.verify');
+    
+    // DPO specific routes
+    Route::post('/dpo/create', [PaymentController::class, 'dpoCreate'])->name('payment.dpo.create');
+    Route::post('/dpo/verify', [PaymentController::class, 'dpoVerify'])->name('payment.dpo.verify');
+    
+    // PesaPal specific routes
+    Route::post('/pesapal/create', [PaymentController::class, 'pesapalCreate'])->name('payment.pesapal.create');
+    Route::get('/pesapal/status/{orderTrackingId}', [PaymentController::class, 'pesapalStatus'])->name('payment.pesapal.status');
+});
+
+// Payment webhook routes (no authentication - called by payment providers)
+Route::prefix('payment/webhooks')->group(function () {
+    Route::post('/mpesa', [PaymentController::class, 'mpesaWebhook'])->name('payment.webhook.mpesa');
+    Route::post('/dpo', [PaymentController::class, 'dpoWebhook'])->name('payment.webhook.dpo');
+    Route::post('/pesapal', [PaymentController::class, 'pesapalWebhook'])->name('payment.webhook.pesapal');
+});
+
+// Standardized webhook URLs for all payment providers
+Route::post('/payment/flutterwave/webhook', [PaymentController::class, 'flutterwaveWebhook'])
+    ->name('payment.flutterwave.webhook');
+
+Route::post('/payment/mpesa/webhook', [PaymentController::class, 'mpesaWebhook'])
+    ->name('payment.mpesa.webhook');
+
+Route::post('/payment/dpo/webhook', [PaymentController::class, 'dpoWebhook'])
+    ->name('payment.dpo.webhook');
+
+Route::post('/payment/pesapal/webhook', [PaymentController::class, 'pesapalWebhook'])
+    ->name('payment.pesapal.webhook');
+
+// Payment callback routes (no authentication - called by payment providers)
+Route::prefix('payment/callbacks')->group(function () {
+    Route::match(['get','post'], '/flutterwave', [PaymentController::class, 'flutterwaveCallback'])
+        ->name('payment.flutterwave.callback');
+});
+
+// Payment status routes (for user redirects after payment)
+Route::prefix('payment')->group(function () {
+    Route::get('/success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/failed', [PaymentController::class, 'paymentFailed'])->name('payment.failed');
 });
