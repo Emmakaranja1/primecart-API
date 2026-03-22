@@ -64,6 +64,12 @@
                         </svg>
                         Test API Health
                     </a>
+                    <a href="https://github.com/Emmakaranja1/primecart-API/blob/main/PrimeCart-API-Postman-Documentation.md" target="_blank" class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-all transform hover:scale-105">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+                        </svg>
+                        Postman Docs
+                    </a>
                 </div>
             </div>
         </div>
