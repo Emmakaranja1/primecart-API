@@ -30,8 +30,8 @@ class PesaPalService
     {
         try {
             
-            if ($this->environment === 'sandbox') {
-                Log::info('PesaPal Payment: Using mock response for debugging');
+            if ($this->environment === 'sandbox' || env('ENABLE_PESAPAL_MOCK', false)) {
+                Log::info('PesaPal Payment: Using mock response for testing');
                 
                 $merchantReference = 'ORD-' . $payment->order_id . '-' . strtoupper(Str::random(6));
                 $mockTrackingId = $merchantReference;

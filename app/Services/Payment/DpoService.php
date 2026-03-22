@@ -33,8 +33,8 @@ class DpoService
             $serviceDate = now()->format('Y/m/d H:i');
 
             
-            if ($this->environment === 'sandbox' && app()->environment('local')) {
-                Log::info('DPO Payment: Using mock response for local testing');
+            if ($this->environment === 'sandbox' && (app()->environment('local') || env('ENABLE_DPO_MOCK', false))) {
+                Log::info('DPO Payment: Using mock response for testing');
                 
                 $mockTransToken = 'MOCK_' . strtoupper(Str::random(12));
                 $paymentUrl = $this->baseUrl . '/payv2.php?ID=' . $mockTransToken;
@@ -148,8 +148,8 @@ XML;
     {
         try {
             
-            if ($this->environment === 'sandbox' && app()->environment('local')) {
-                Log::info('DPO Verification: Using mock response for local testing');
+            if ($this->environment === 'sandbox' && (app()->environment('local') || env('ENABLE_DPO_MOCK', false))) {
+                Log::info('DPO Verification: Using mock response for testing');
                 
                 $payment = Payment::where('gateway_reference', $transToken)->first();
                 if ($payment) {
