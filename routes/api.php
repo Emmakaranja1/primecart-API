@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,4 +39,14 @@ Route::middleware(['jwt.auth', 'admin'])->prefix('admin')->group(function () {
     
     // Activity logs
     Route::get('/activity-logs', [AdminController::class, 'getActivityLogs'])->name('admin.activity-logs');
+    
+    // Product management
+    Route::get('/products', [ProductController::class, 'adminIndex'])->name('admin.products.list');
+    Route::post('/products', [ProductController::class, 'store'])->name('admin.products.create');
+    Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.delete');
 });
+
+// User product routes (public access)
+Route::get('/products', [ProductController::class, 'index'])->name('products.list');
+Route::get('/products/{id}', [ProductController::class, 'show'])->name('products.show');
