@@ -14,7 +14,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'search' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:255',
-            'brand' => 'nullable|string|max:255',
+            'brand' => 'nullable|string',  
             'min_price' => 'nullable|numeric|min:0',
             'max_price' => 'nullable|numeric|min:0',
             'featured' => 'nullable|boolean',
@@ -40,8 +40,9 @@ class ProductController extends Controller
             $query->byCategory($request->category);
         }
 
-        if ($request->has('brand')) {
-            $query->byBrand($request->brand);
+        if ($request->filled('brand')) {
+            $brands = array_map('trim', explode(',', $request->brand));
+            $query->whereIn('brand', $brands);
         }
 
         if ($request->has('min_price') || $request->has('max_price')) {
@@ -101,7 +102,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(), [
             'search' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:255',
-            'brand' => 'nullable|string|max:255',
+            'brand' => 'nullable|string',  
             'min_price' => 'nullable|numeric|min:0',
             'max_price' => 'nullable|numeric|min:0',
             'is_active' => 'nullable|boolean',
@@ -128,8 +129,9 @@ class ProductController extends Controller
             $query->byCategory($request->category);
         }
 
-        if ($request->has('brand')) {
-            $query->byBrand($request->brand);
+        if ($request->filled('brand')) {
+            $brands = array_map('trim', explode(',', $request->brand));
+            $query->whereIn('brand', $brands);
         }
 
         if ($request->has('min_price') || $request->has('max_price')) {
