@@ -172,6 +172,47 @@ class AdminController extends Controller
     }
 
     /**
+     * Delete a user.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        if ($user->role === 'admin') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete admin users'
+            ], 403);
+        }
+
+        // Log activity before deletion
+        ActivityLog::log(
+            auth()->user()->id,
+            'delete_user',
+            'user',
+            $user->id,
+            request()->ip()
+        );
+
+        $user->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User deleted successfully'
+        ]);
+    }
+
+    /**
      * Get activity logs.
      *
      * @param  \Illuminate\Http\Request  $request

@@ -52,6 +52,7 @@ Route::middleware(['jwt.auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/users', [AdminController::class, 'getUsers'])->name('admin.users.list');
     Route::put('/users/{id}/activate', [AdminController::class, 'activateUser'])->name('admin.users.activate');
     Route::put('/users/{id}/deactivate', [AdminController::class, 'deactivateUser'])->name('admin.users.deactivate');
+    Route::delete('/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
     
     // Activity logs
     Route::get('/activity-logs', [AdminController::class, 'getActivityLogs'])->name('admin.activity-logs');
