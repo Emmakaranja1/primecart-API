@@ -336,6 +336,111 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Update user profile.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+        
+        $validator = Validator::make($request->all(), [
+            'username' => 'sometimes|required|string|max:255|unique:users,username,'.$user->id,
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email,'.$user->id,
+            'phone_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $updateData = $request->only(['username', 'email', 'phone_number', 'address']);
+        
+        $user->update($updateData);
+
+        ActivityLog::log(
+            $user->id,
+            'profile_updated',
+            'user',
+            $user->id,
+            $request->ip()
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully',
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role,
+                'phone_number' => $user->phone_number,
+                'address' => $user->address,
+                'status' => $user->status,
+                'email_verified_at' => $user->email_verified_at,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ]
+        ]);
+    }
+
+    /**
+     * Update user address only.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateAddress(Request $request)
+    {
+        $user = auth()->user();
+        
+        $validator = Validator::make($request->all(), [
+            'address' => 'required|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user->update(['address' => $request->address]);
+
+        ActivityLog::log(
+            $user->id,
+            'address_updated',
+            'user',
+            $user->id,
+            $request->ip()
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Address updated successfully',
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->role,
+                'phone_number' => $user->phone_number,
+                'address' => $user->address,
+                'status' => $user->status,
+                'email_verified_at' => $user->email_verified_at,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ]
+        ]);
+    }
+
     public function resetPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [

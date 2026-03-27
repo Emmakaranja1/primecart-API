@@ -42,6 +42,8 @@ Route::prefix('auth')->group(function () {
 Route::middleware('jwt.auth')->prefix('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('auth.logout');
     Route::get('/profile', [AuthController::class, 'profile'])->name('auth.profile');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('auth.profile.update');
+    Route::put('/address', [AuthController::class, 'updateAddress'])->name('auth.address.update');
 });
 
 // Admin routes (JWT + Admin role required)
