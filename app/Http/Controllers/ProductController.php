@@ -17,7 +17,7 @@ class ProductController extends Controller
             'brand' => 'nullable|string',  
             'min_price' => 'nullable|numeric|min:0',
             'max_price' => 'nullable|numeric|min:0',
-            'featured' => 'nullable|boolean',
+            'featured' => 'nullable|string|in:true,false',
             'page' => 'nullable|integer|min:1',
             'limit' => 'nullable|integer|min:1|max:100',
         ]);
@@ -49,8 +49,8 @@ class ProductController extends Controller
             $query->byPriceRange($request->min_price, $request->max_price);
         }
 
-        if ($request->has('featured')) {
-            $query->where('featured', $request->boolean('featured'));
+        if ($request->filled('featured') && $request->get('featured') === 'true') {
+            $query->featured();
         }
 
         $limit = $request->get('limit', 12);
