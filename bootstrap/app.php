@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use App\Http\Middleware\JWTMiddleware;
 use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\HandleCors;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -17,6 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
 
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        
+        $middleware->use([
+            HandleCors::class,
+        ]);
+        
         $middleware->alias([
             'jwt.auth' => JWTMiddleware::class,
             'admin' => AdminMiddleware::class,

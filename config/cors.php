@@ -28,9 +28,12 @@ return [
         'http://127.0.0.1:5174',
         'http://127.0.0.1:3000',
         'http://127.0.0.1:8080',
+        'https://web-production-e6965.up.railway.app', 
     ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https://.*\.up\.railway\.app$#', 
+    ],
 
     'allowed_headers' => [
         '*',
