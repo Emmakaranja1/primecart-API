@@ -49,8 +49,8 @@ class ProductController extends Controller
             $query->byPriceRange($request->min_price, $request->max_price);
         }
 
-        if ($request->boolean('featured')) {
-            $query->featured();
+        if ($request->has('featured')) {
+            $query->where('featured', $request->boolean('featured'));
         }
 
         $limit = $request->get('limit', 12);
