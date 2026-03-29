@@ -31,9 +31,20 @@ class MpesaService
     public function initiateStkPush(Payment $payment, $phoneNumber, $callbackUrl = null)
     {
         try {
+            Log::info('M-Pesa STK Push Initiation', [
+                'payment_id' => $payment->id,
+                'phone_number' => $phoneNumber,
+                'amount' => $payment->amount,
+                'transaction_id' => $payment->transaction_id
+            ]);
+            
             $accessToken = $this->getAccessToken();
             
             if (!$accessToken) {
+                Log::error('M-PESA Access Token Failed', [
+                    'payment_id' => $payment->id,
+                    'error' => 'Failed to obtain M-PESA access token'
+                ]);
                 throw new \Exception('Failed to obtain M-PESA access token');
             }
 

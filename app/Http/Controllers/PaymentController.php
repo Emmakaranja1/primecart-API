@@ -246,10 +246,25 @@ class PaymentController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::error('M-Pesa Validation Failed', [
+                'request_data' => $request->all(),
+                'errors' => $validator->errors(),
+                'order_id' => $request->order_id,
+                'phone_number' => $request->phone_number,
+                'user_id' => auth()->id()
+            ]);
+            
             return response()->json([
                 'success' => false,
                 'message' => 'Validation errors',
-                'errors' => $validator->errors()
+                'errors' => $validator->errors(),
+                'debug' => [
+                    'request_data' => $request->all(),
+                    'order_id' => $request->order_id,
+                    'phone_number' => $request->phone_number,
+                    'user_id' => auth()->id(),
+                    'order_exists' => Order::where('id', $request->order_id)->where('user_id', auth()->id())->exists()
+                ]
             ], 422);
         }
 
