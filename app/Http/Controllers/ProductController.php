@@ -296,7 +296,15 @@ class ProductController extends Controller
         }
 
         $product->delete();
-
+        
+        ActivityLog::log(
+            auth()->user()->id,
+            'product_deleted',
+            'product',
+            $product->id,
+            $request->ip()
+        );
+        
         return response()->json([
             'success' => true,
             'message' => 'Product deleted successfully'
