@@ -470,7 +470,10 @@ class PaymentController extends Controller
         $user = auth()->user();
         
         
-        $payment = Payment::where('transaction_id', $reference)
+        $payment = Payment::where(function($query) use ($reference) {
+            $query->where('transaction_id', $reference)
+                  ->orWhere('gateway_reference', $reference);
+        })
             ->where('user_id', $user->id)
             ->where('gateway', 'Flutterwave')
             ->first();
@@ -482,7 +485,7 @@ class PaymentController extends Controller
                 'debug' => [
                     'reference_searched' => $reference,
                     'user_id' => $user->id,
-                    'note' => 'Use your internal transaction ID (FW-XXXX...) from payment initiation'
+                    'note' => 'Searched both internal transaction ID (FW-XXXX...) and external Flutterwave transaction ID'
                 ]
             ], 404);
         }
