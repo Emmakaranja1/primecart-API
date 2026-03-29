@@ -104,7 +104,7 @@ class OrderController extends Controller
     {
         $user = auth()->user();
         
-        $orders = Order::with(['orderItems.product'])
+        $orders = Order::with(['orderItems.product', 'latestPayment'])
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
             ->paginate($request->get('per_page', 10));
@@ -119,6 +119,7 @@ class OrderController extends Controller
                 'payment_method' => $order->payment_method,
                 'created_at' => $order->created_at,
                 'items_count' => $order->orderItems->count(),
+                'payment_transaction_id' => $order->latestPayment?->transaction_id,
             ];
         });
 
@@ -140,7 +141,7 @@ class OrderController extends Controller
     {
         $user = auth()->user();
         
-        $order = Order::with(['user', 'orderItems.product'])
+        $order = Order::with(['user', 'orderItems.product', 'latestPayment'])
             ->where('id', $id)
             ->where('user_id', $user->id)
             ->first();
@@ -181,6 +182,7 @@ class OrderController extends Controller
                     'created_at' => $order->created_at,
                     'approved_at' => $order->approved_at,
                     'delivered_at' => $order->delivered_at,
+                    'payment_transaction_id' => $order->latestPayment?->transaction_id,
                 ],
                 'items' => $orderItems,
             ]
