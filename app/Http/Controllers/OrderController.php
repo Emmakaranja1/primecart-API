@@ -285,4 +285,107 @@ class OrderController extends Controller
             ]
         ]);
     }
+
+    public function updateOrderStatus(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'payment_status' => 'nullable|in:pending,paid,failed,refunded',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation errors',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        $admin = auth()->user();
+
+        
+        $order->status = $request->status;
+        
+        if ($request->has('payment_status')) {
+            $order->payment_status = $request->payment_status;
+        }
+
+        
+        if ($request->status === 'delivered') {
+            $order->delivered_at = now();
+        } elseif ($request->status === 'processing') {
+            $order->approved_at = now();
+        }
+
+        $order->save();
+
+        
+        ActivityLog::log(
+            $admin->id,
+            'order_status_updated',
+            'order',
+            $order->id,
+            $request->ip()
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order status updated successfully',
+            'data' => [
+                'id' => $order->id,
+                'transaction_reference' => $order->transaction_reference,
+                'status' => $order->status,
+                'payment_status' => $order->payment_status,
+                'updated_at' => $order->updated_at,
+            ]
+        ]);
+    }
+
+    public function deleteOrder(Request $request, $id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        $admin = auth()->user();
+
+        
+        if (!in_array($order->status, ['cancelled', 'pending'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete orders with status: ' . $order->status
+            ], 400);
+        }
+
+        $orderId = $order->id;
+        $order->delete();
+
+        
+        ActivityLog::log(
+            $admin->id,
+            'order_deleted',
+            'order',
+            $orderId,
+            $request->ip()
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Order deleted successfully'
+        ]);
+    }
 }

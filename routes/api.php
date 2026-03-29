@@ -93,6 +93,8 @@ Route::middleware('jwt.auth')->prefix('orders')->group(function () {
 // Admin order routes (JWT + Admin role required)
 Route::middleware(['jwt.auth', 'admin'])->prefix('admin/orders')->group(function () {
     Route::get('/', [OrderController::class, 'adminIndex'])->name('admin.orders.index');
+    Route::put('/{id}/status', [OrderController::class, 'updateOrderStatus'])->name('admin.orders.update-status');
+    Route::delete('/{id}', [OrderController::class, 'deleteOrder'])->name('admin.orders.delete');
 });
 
 // Payment routes (JWT authentication required)
