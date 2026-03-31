@@ -16,10 +16,14 @@ require __DIR__.'/../vendor/autoload.php';
 
 if (!function_exists('request_parse_body')) {
     function request_parse_body(?array $allowed_methods = null): array {
-    
+        
+        
         
         $get = $_GET;
         $post = [];
+        $files = [];
+        $cookies = $_COOKIE;
+        $server = $_SERVER;
         
         
         $content_type = $_SERVER['CONTENT_TYPE'] ?? '';
@@ -31,14 +35,15 @@ if (!function_exists('request_parse_body')) {
                 $post = array_merge($post, $parsed);
             }
         } elseif (strpos($content_type, 'application/x-www-form-urlencoded') !== false) {
-            
+        
             $post = $_POST;
         } elseif (strpos($content_type, 'multipart/form-data') !== false) {
             
             $post = $_POST;
+            $files = $_FILES;
         }
         
-        return [$get, $post];
+        return [$get, $post, $files, $cookies, $server];
     }
 }
 
