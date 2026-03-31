@@ -24,13 +24,20 @@ class HandleCors
         $origin = $request->header('Origin');
         
         
+        if ($request->isMethod('OPTIONS')) {
+            $response = new Response('', 204);
+        } else {
+            $response = $next($request);
+        }
+
+        
         if (!$origin) {
-            return $next($request);
+            return $response;
         }
         
         $isAllowed = false;
         
-        
+    
         if (in_array($origin, $allowedOrigins)) {
             $isAllowed = true;
         } 
@@ -42,13 +49,6 @@ class HandleCors
                     break;
                 }
             }
-        }
-
-        
-        if ($request->isMethod('OPTIONS')) {
-            $response = new Response('', 204);
-        } else {
-            $response = $next($request);
         }
 
         
