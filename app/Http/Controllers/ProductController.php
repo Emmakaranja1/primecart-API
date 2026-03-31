@@ -311,13 +311,32 @@ class ProductController extends Controller
             ], 404);
         }
 
+        // Check if product has associated order items or cart items
+        $hasOrderItems = $product->orderItems()->exists();
+        $hasCartItems = $product->cartItems()->exists();
+
+        if ($hasOrderItems) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete product: It has associated orders. Please delete the orders first.'
+            ], 400);
+        }
+
+        if ($hasCartItems) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete product: It is in users\' shopping carts.'
+            ], 400);
+        }
+
+        $productId = $product->id;
         $product->delete();
         
         ActivityLog::log(
             auth()->user()->id,
             'product_deleted',
             'product',
-            $product->id,
+            $productId,
             $request->ip()
         );
         
