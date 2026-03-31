@@ -139,11 +139,27 @@ class ProductController extends Controller
         }
 
         if ($request->has('is_active')) {
-            $query->where('is_active', $request->boolean('is_active'));
+            $isActive = $request->get('is_active');
+            if ($isActive === 'false' || $isActive === '0') {
+                $isActive = false;
+            } elseif ($isActive === 'true' || $isActive === '1') {
+                $isActive = true;
+            } else {
+                $isActive = filter_var($isActive, FILTER_VALIDATE_BOOLEAN);
+            }
+            $query->where('is_active', $isActive);
         }
 
         if ($request->has('featured')) {
-            $query->where('featured', $request->boolean('featured'));
+            $isFeatured = $request->get('featured');
+            if ($isFeatured === 'false' || $isFeatured === '0') {
+                $isFeatured = false;
+            } elseif ($isFeatured === 'true' || $isFeatured === '1') {
+                $isFeatured = true;
+            } else {
+                $isFeatured = filter_var($isFeatured, FILTER_VALIDATE_BOOLEAN);
+            }
+            $query->where('featured', $isFeatured);
         }
 
         $limit = $request->get('limit', 10);
