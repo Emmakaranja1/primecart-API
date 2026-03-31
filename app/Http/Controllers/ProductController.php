@@ -318,7 +318,7 @@ class ProductController extends Controller
         if ($hasOrderItems) {
             return response()->json([
                 'success' => false,
-                'message' => 'Cannot delete product: It has associated orders. Please delete the orders first.'
+                'message' => 'Cannot delete product: It has associated orders. Please delete orders first.'
             ], 400);
         }
 
@@ -331,15 +331,19 @@ class ProductController extends Controller
 
         $productId = $product->id;
         $product->delete();
-        
-        ActivityLog::log(
-            auth()->user()->id,
-            'product_deleted',
-            'product',
-            $productId,
-            $request->ip()
-        );
-        
+
+        try {
+            ActivityLog::log(
+                auth()->user()->id,
+                'product_deleted',
+                'product',
+                $productId,
+                request()->ip()
+            );
+        } catch (\Exception $e) {
+            \Log::error('Activity log failed: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Product deleted successfully'
