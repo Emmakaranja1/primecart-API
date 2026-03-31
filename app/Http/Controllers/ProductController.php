@@ -235,10 +235,10 @@ class ProductController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
+            'title' => 'sometimes|required|string|max:255',
             'description' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'quantity' => 'required|integer|min:0',
+            'price' => 'sometimes|required|numeric|min:0',
+            'quantity' => 'sometimes|required|integer|min:0',
             'category' => 'nullable|string|max:255',
             'brand' => 'nullable|string|max:255',
             'image' => 'nullable|string|max:500',
