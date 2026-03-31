@@ -30,12 +30,12 @@ class Product extends Model
 
     public function orderItems(): HasMany
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(\App\Models\OrderItem::class);
     }
 
     public function cartItems(): HasMany
     {
-        return $this->hasMany(CartItem::class);
+        return $this->hasMany(\App\Models\CartItem::class);
     }
 
     public function scopeActive($query)
