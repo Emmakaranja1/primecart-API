@@ -66,7 +66,9 @@ Route::middleware(['jwt.auth', 'admin'])->prefix('admin')->group(function () {
     // Product management
     Route::get('/products', [ProductController::class, 'adminIndex'])->name('admin.products.list');
     Route::post('/products', [ProductController::class, 'store'])->name('admin.products.create');
+    Route::get('/products/{id}', [ProductController::class, 'show'])->name('admin.products.show');
     Route::put('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update');
+    Route::post('/products/{id}', [ProductController::class, 'update'])->name('admin.products.update.post');
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('admin.products.delete');
 });
 
