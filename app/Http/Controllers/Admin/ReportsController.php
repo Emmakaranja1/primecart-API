@@ -314,38 +314,38 @@ class ReportsController extends Controller
      */
     private function exportToExcel($reportType, $filename, $request)
     {
-        switch ($reportType) {
-            case 'users':
-                return Excel::download(
-                    new UsersExport($request->start_date, $request->end_date),
-                    $filename
-                );
-            
-            case 'orders':
-                return Excel::download(
-                    new OrdersExport(
-                        $request->start_date,
-                        $request->end_date,
-                        $request->status,
-                        $request->payment_status
-                    ),
-                    $filename
-                );
-            
-            case 'activity':
-                return Excel::download(
-                    new ActivityExport(
-                        $request->start_date,
-                        $request->end_date,
-                        $request->user_id,
-                        $request->action
-                    ),
-                    $filename
-                );
-            
-            default:
-                throw new \InvalidArgumentException("Invalid report type: {$reportType}");
-        }
+        $response = match ($reportType) {
+            'users' => Excel::download(
+                new UsersExport($request->start_date, $request->end_date),
+                $filename
+            ),
+            'orders' => Excel::download(
+                new OrdersExport(
+                    $request->start_date,
+                    $request->end_date,
+                    $request->status,
+                    $request->payment_status
+                ),
+                $filename
+            ),
+            'activity' => Excel::download(
+                new ActivityExport(
+                    $request->start_date,
+                    $request->end_date,
+                    $request->user_id,
+                    $request->action
+                ),
+                $filename
+            ),
+            default => throw new \InvalidArgumentException("Invalid report type: {$reportType}")
+        };
+
+        $response->headers->set('Access-Control-Allow-Origin', '*');
+        $response->headers->set('Access-Control-Allow-Methods', 'POST, OPTIONS');
+        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
+        $response->headers->set('Access-Control-Expose-Headers', 'Content-Disposition');
+        
+        return $response;
     }
 
     /**
