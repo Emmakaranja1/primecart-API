@@ -50,6 +50,7 @@ return [
     'exposed_headers' => [
         'Authorization',
         'Content-Disposition',
+        'Access-Control-Expose-Headers',
         ],
 
     'max_age' => 0,
