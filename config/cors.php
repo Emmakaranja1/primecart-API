@@ -47,10 +47,13 @@ return [
         'Access-Control-Request-Headers'
     ],
 
-    'exposed_headers' => ['Authorization'],
+    'exposed_headers' => [
+        'Authorization',
+        'Content-Disposition',
+        ],
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    'supports_credentials' => false,
 
 ];
