@@ -53,12 +53,23 @@ class HandleCors
 
         
         if ($isAllowed) {
-            $response->header('Access-Control-Allow-Origin', $origin);
-            $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-            $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token');
-            $response->header('Access-Control-Expose-Headers', 'Authorization');
-            $response->header('Access-Control-Allow-Credentials', 'true');
-            $response->header('Access-Control-Max-Age', '3600');
+            // Check if response supports header() method (normal Response)
+            if (method_exists($response, 'header')) {
+                $response->header('Access-Control-Allow-Origin', $origin);
+                $response->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+                $response->header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token');
+                $response->header('Access-Control-Expose-Headers', 'Authorization, Content-Disposition');
+                $response->header('Access-Control-Allow-Credentials', 'true');
+                $response->header('Access-Control-Max-Age', '3600');
+            } elseif ($response instanceof \Symfony\Component\HttpFoundation\BinaryFileResponse) {
+                // For file downloads (Excel), set headers via headers->set()
+                $response->headers->set('Access-Control-Allow-Origin', $origin);
+                $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+                $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token');
+                $response->headers->set('Access-Control-Expose-Headers', 'Authorization, Content-Disposition');
+                $response->headers->set('Access-Control-Allow-Credentials', 'true');
+                $response->headers->set('Access-Control-Max-Age', '3600');
+            }
         }
         
         return $response;
