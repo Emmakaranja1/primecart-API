@@ -188,7 +188,7 @@
         <!-- Footer -->
         <footer class="mt-16 py-8 border-t border-gray-200">
             <div class="text-center text-gray-600">
-                <p>&copy; 2024 PrimeCart API. Built with Laravel, powered by modern web technologies.</p>
+                <p>&copy; 2026 PrimeCart API. Built with Laravel, powered by modern web technologies.</p>
             </div>
         </footer>
     </main>
