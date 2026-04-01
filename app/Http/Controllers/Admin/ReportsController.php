@@ -314,31 +314,41 @@ class ReportsController extends Controller
      */
     private function exportToExcel($reportType, $filename, $request)
     {
-        $response = match ($reportType) {
-            'users' => Excel::download(
-                new UsersExport($request->start_date, $request->end_date),
-                $filename
-            ),
-            'orders' => Excel::download(
-                new OrdersExport(
-                    $request->start_date,
-                    $request->end_date,
-                    $request->status,
-                    $request->payment_status
-                ),
-                $filename
-            ),
-            'activity' => Excel::download(
-                new ActivityExport(
-                    $request->start_date,
-                    $request->end_date,
-                    $request->user_id,
-                    $request->action
-                ),
-                $filename
-            ),
-            default => throw new \InvalidArgumentException("Invalid report type: {$reportType}")
-        };
+        switch ($reportType) {
+            case 'users':
+                $response = Excel::download(
+                    new UsersExport($request->start_date, $request->end_date),
+                    $filename
+                );
+                break;
+            
+            case 'orders':
+                $response = Excel::download(
+                    new OrdersExport(
+                        $request->start_date,
+                        $request->end_date,
+                        $request->status,
+                        $request->payment_status
+                    ),
+                    $filename
+                );
+                break;
+            
+            case 'activity':
+                $response = Excel::download(
+                    new ActivityExport(
+                        $request->start_date,
+                        $request->end_date,
+                        $request->user_id,
+                        $request->action
+                    ),
+                    $filename
+                );
+                break;
+            
+            default:
+                throw new \InvalidArgumentException("Invalid report type: {$reportType}");
+        }
 
         return $response;
     }
