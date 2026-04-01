@@ -56,4 +56,7 @@ return [
 
     'supports_credentials' => true,
 
+
+    'always_add_headers' => true,
+
 ];
