@@ -15,7 +15,7 @@ return [
         | Here you can specify how big the chunk should be.
         |
         */
-        'chunk_size'             => 1000,
+        'chunk_size'             => 100,
 
         /*
         |--------------------------------------------------------------------------
@@ -257,7 +257,7 @@ return [
         |
         */
         'batch'       => [
-            'memory_limit' => 60000,
+            'memory_limit' => 32000,
         ],
 
         /*
@@ -326,7 +326,7 @@ return [
         | and the create file (file).
         |
         */
-        'local_path'          => storage_path('framework/cache/laravel-excel'),
+        'local_path'          => sys_get_temp_dir() . '/laravel-excel',
 
         /*
         |--------------------------------------------------------------------------
@@ -339,8 +339,8 @@ return [
         |
         */
         'local_permissions'   => [
-            // 'dir'  => 0755,
-            // 'file' => 0644,
+            'dir'  => 0755,
+            'file' => 0644,
         ],
 
         /*
