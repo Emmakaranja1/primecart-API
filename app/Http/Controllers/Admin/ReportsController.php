@@ -340,11 +340,6 @@ class ReportsController extends Controller
             default => throw new \InvalidArgumentException("Invalid report type: {$reportType}")
         };
 
-        $response->headers->set('Access-Control-Allow-Origin', '*');
-        $response->headers->set('Access-Control-Allow-Methods', 'POST, OPTIONS');
-        $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-        $response->headers->set('Access-Control-Expose-Headers', 'Content-Disposition');
-        
         return $response;
     }
 
