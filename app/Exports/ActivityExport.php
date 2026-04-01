@@ -8,9 +8,10 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ActivityExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
+class ActivityExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles, WithChunkReading
 {
     protected $startDate;
     protected $endDate;
@@ -81,5 +82,10 @@ class ActivityExport implements FromQuery, WithHeadings, WithMapping, ShouldAuto
         return [
             1 => ['font' => ['bold' => true]],
         ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 200;
     }
 }

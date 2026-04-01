@@ -350,7 +350,7 @@ class ReportsController extends Controller
                 throw new \InvalidArgumentException("Invalid report type: {$reportType}");
         }
 
-        return $response;
+        return $response->deleteFileAfterSend(true);
     }
 
     /**
