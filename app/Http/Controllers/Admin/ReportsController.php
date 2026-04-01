@@ -316,13 +316,14 @@ class ReportsController extends Controller
     {
         switch ($reportType) {
             case 'users':
-                return Excel::download(
+                $response = Excel::download(
                     new UsersExport($request->start_date, $request->end_date),
                     $filename
-                )->deleteFileAfterSend(true);
+                );
+                break;
             
             case 'orders':
-                return Excel::download(
+                $response = Excel::download(
                     new OrdersExport(
                         $request->start_date,
                         $request->end_date,
@@ -330,10 +331,11 @@ class ReportsController extends Controller
                         $request->payment_status
                     ),
                     $filename
-                )->deleteFileAfterSend(true);
+                );
+                break;
             
             case 'activity':
-                return Excel::download(
+                $response = Excel::download(
                     new ActivityExport(
                         $request->start_date,
                         $request->end_date,
@@ -341,11 +343,18 @@ class ReportsController extends Controller
                         $request->action
                     ),
                     $filename
-                )->deleteFileAfterSend(true);
+                );
+                break;
             
             default:
                 throw new \InvalidArgumentException("Invalid report type: {$reportType}");
         }
+
+        
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        
+        return $response->deleteFileAfterSend(true);
     }
 
     /**
