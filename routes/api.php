@@ -46,6 +46,11 @@ Route::middleware('jwt.auth')->prefix('auth')->group(function () {
     Route::put('/address', [AuthController::class, 'updateAddress'])->name('auth.address.update');
 });
 
+// Allow CORS preflight requests for all routes
+Route::options('{any}', function () {
+    return response()->json([], 200);
+})->where('any', '.*');
+
 // Admin routes (JWT + Admin role required)
 Route::middleware(['jwt.auth', 'admin'])->prefix('admin')->group(function () {
     // User management
