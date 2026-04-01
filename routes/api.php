@@ -82,6 +82,7 @@ Route::middleware('jwt.auth')->prefix('cart')->group(function () {
     Route::post('/add', [CartController::class, 'add'])->name('cart.add');
     Route::get('/', [CartController::class, 'index'])->name('cart.index');
     Route::put('/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/{id}', [CartController::class, 'update'])->name('cart.update.post');
     Route::delete('/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 });
 
