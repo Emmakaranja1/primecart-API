@@ -385,3 +385,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ---
 
 **PrimeCart Backend API** - A robust, scalable e-commerce backend solution built with Laravel.
+
+
+Developed by: Emma
