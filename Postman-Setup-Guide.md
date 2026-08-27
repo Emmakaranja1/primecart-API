@@ -41,7 +41,7 @@ The collection uses these environment variables:
 
 | Variable | Value | Description |
 |----------|-------|-------------|
-| `base_url` | `https://web-production-e6965.up.railway.app/api` | Railway production URL |
+| `base_url` | `https://web-production-9ebd5.up.railway.app/api` | Railway production URL |
 | `local_base_url` | `http://localhost:8000/api` | Local development URL |
 | `jwt_token` | *(auto-populated)* | Authentication token |
 | `user_email` | `john@example.com` | Test user email |
@@ -61,7 +61,7 @@ The collection uses these environment variables:
 
 ### For Production
 1. Edit the environment  
-2. Change `base_url` to `https://web-production-e6965.up.railway.app/api`
+2. Change `base_url` to `https://web-production-9ebd5.up.railway.app/api`
 3. Save and use
 
 ## 📱 Testing Payment Gateways
@@ -131,7 +131,7 @@ Refer to `PrimeCart-API-Postman-Documentation.md` for:
 
 ## 🚀 Production URL
 
-**Railway Deployed URL**: `https://web-production-e6965.up.railway.app/api`
+**Railway Deployed URL**: `https://web-production-9ebd5.up.railway.app/api`
 
 ## 📞 Support
 

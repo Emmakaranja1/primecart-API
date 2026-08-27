@@ -4,7 +4,7 @@
 	"values": [
 		{
 			"key": "base_url",
-			"value": "https://web-production-e6965.up.railway.app/api",
+			"value": "https://web-production-9ebd5.up.railway.app/api",
 			"type": "default",
 			"enabled": true,
 			"description": "Base URL for PrimeCart API (Railway Production)"

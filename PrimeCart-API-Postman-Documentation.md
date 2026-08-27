@@ -2,7 +2,7 @@
 
 ## 🚀 Base URL
 
-**Production (Railway):** `https://web-production-e6965.up.railway.app/api`
+**Production (Railway):** `https://web-production-9ebd5.up.railway.app/api`
 
 **Local Development:** `http://localhost:8000/api`
 
@@ -996,7 +996,7 @@ Test webhook functionality.
 ### 1. Setup Postman
 1. Import this collection into Postman
 2. Set environment variables:
-   - `base_url`: `https://web-production-e6965.up.railway.app/api`
+   - `base_url`: `https://web-production-9ebd5.up.railway.app/api`
    - `jwt_token`: (will be set after login)
 
 ### 2. Register/Login Flow
